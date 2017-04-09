@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			canvas {
+				border: 3px solid #ccc;
+				display: block;
+				margin: 30px auto;
+			}
+		</style>
+		<script>
+			window.onload = function() {
+				var canvas = document.getElementById("canvas");
+				var ctx = canvas.getContext('2d');
+				var speed = 160;
+				var x = y = 8;
+				var t = 20;
+				var a = b = 0;
+				var size = 8;
+				var map = [];
+				var direction = 2;
+
+				setInterval(move, speed)
+				function move() {
+					switch(direction) {
+						case 1:
+							y = y - size;
+							break;
+						case 2:
+							x = x + size;
+							break;
+						case 0:
+							x = x - size;
+							break;
+						case 3:
+							y = y + size;
+							break;
+					}
+					if(x > 400 || y > 400 || x < 0 || y < 0) {
+						alert("你挂了，继续努力吧!失败原因：碰壁了.....");
+						window.location.reload();
+					}
+					for(var i = 0; i < map.length; i++) {
+						if(parseInt(map[i].x) == x && parseInt(map[i].y) == y) {
+							alert("你挂了，继续努力吧！失败原因：撞到自己了.....");
+							window.location.reload();
+						}
+					}
+					if(map.length > t) {
+						var cl = map.shift();
+						ctx.clearRect(cl['x'], cl['y'], size, size);
+					}
+					map.push({
+						'x': x,
+						'y': y
+					})
+					ctx.fillStyle = "#006699";
+					ctx.strokeStyle = "#006699";
+					ctx.fillRect(x, y, size, size);
+					if((a * 8) == x && (b * 8) == y) {
+						t++;
+						food();
+					}
+				}
+				document.onkeydown = function(ev) {
+					var code = ev.keyCode - 37;
+					switch(code) {
+						case 1:
+							direction = 1;
+							break;
+
+						case 2:
+							direction = 2;
+							break;
+
+						case 3:
+							direction = 3;
+							break;
+
+						case 0:
+							direction = 0;
+							break;
+					}
+				}
+				function food() {
+					a = Math.ceil(Math.random() * 50);
+					b = Math.ceil(Math.random() * 50);
+
+					ctx.fillStyle = "#000";
+					ctx.strokeStyle = "#000";
+					ctx.fillRect(a * 8, b * 8, size, size);
+				}
+
+				food();
+			}
+		</script>
+	</head>
+
+	<body>
+		<canvas id="canvas" width="400" height="400"></canvas>
+	</body>
+
+</html>
